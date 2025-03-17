@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
 
@@ -18,6 +18,7 @@ router.patch("/:id", (req, res) => {
 
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
-  res.send(`User with ID ${id} deleted`)})
+  res.send(`User with ID ${id} deleted`);
+});
 
 module.exports = router;
