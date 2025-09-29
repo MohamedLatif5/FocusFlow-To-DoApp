@@ -1,5 +1,9 @@
 const express = require("express");
 const morgan = require("morgan");
+const connectDB = require("./config/db");
+
+connectDB();
+
 const app = express();
 const port = 3000;
 const userRoutes = require("./routes/userRoutes");
