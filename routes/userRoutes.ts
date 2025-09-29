@@ -13,6 +13,18 @@ router.get("/", async (req: Request, res: Response) => {
 
 const User = require("../models/userModel");
 
+router.get("/:id", async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).send();
+    }
+    res.send(user);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 router.post("/", async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
