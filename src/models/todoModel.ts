@@ -18,6 +18,8 @@ const todoSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+}, {
+  timestamps: true, // This adds createdAt and updatedAt automatically
 });
 
 const Todo = mongoose.model("Todo", todoSchema);
