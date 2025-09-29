@@ -3,7 +3,9 @@ import morgan from "morgan";
 import connectDB from "./config/db";
 import userRoutes from "./routes/userRoutes";
 import todosRoutes from "./routes/todosRoutes";
+import dotenv from "dotenv";
 
+dotenv.config();
 connectDB();
 
 const app = express();
@@ -20,14 +22,14 @@ app.use("/todos", todosRoutes);
 
 // Health check endpoint
 app.get("/", (req, res) => {
-  res.json({ 
-    message: "Todo List API", 
+  res.json({
+    message: "Todo List API",
     version: "1.0.0",
     status: "running",
     endpoints: {
       users: "/users",
-      todos: "/todos"
-    }
+      todos: "/todos",
+    },
   });
 });
 
@@ -37,10 +39,17 @@ app.use("*", (req, res) => {
 });
 
 // Error handling middleware
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Something went wrong!" });
-});
+app.use(
+  (
+    err: any,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    console.error(err.stack);
+    res.status(500).json({ error: "Something went wrong!" });
+  }
+);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

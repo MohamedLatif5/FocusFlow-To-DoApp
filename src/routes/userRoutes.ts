@@ -1,12 +1,13 @@
 import express from "express";
 import type { Request, Response } from "express";
+import { createUser, loginUser } from "../services/userService"; // Import from service
 import User from "../models/userModel";
 
 const router = express.Router();
 
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const users = await User.find({}).select("-password"); // Don't return passwords
+    const users = await User.find({});
     res.json(users);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -15,7 +16,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.params.id).select("-password");
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -31,27 +32,12 @@ router.get("/:id", async (req: Request, res: Response) => {
 router.post("/", async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
-    
-    // Basic validation
-    if (!name || !email || !password) {
-      return res.status(400).json({ 
-        error: "Missing required fields",
-        required: ["name", "email", "password"]
-      });
-    }
-    
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: "Invalid email format" });
-    }
-    
-    const user = new User({ name, email, password });
-    await user.save();
+
+    const user = await createUser(name, email, password); // Use service
     res.status(201).json(user);
   } catch (error: any) {
-    if (error.code === 11000) {
-      return res.status(400).json({ error: "Email already exists" });
+    if (error.message === "Email already exists") {
+      return res.status(400).json({ error: error.message });
     }
     res.status(400).json({ error: error.message });
   }
@@ -79,9 +65,9 @@ router.patch("/:id", async (req: Request, res: Response) => {
       (user as any)[update] = req.body[update];
     });
     await user.save();
-    
-    // Don't return password in response
-    const userResponse = await User.findById(user._id).select("-password");
+
+    // Return user without password
+    const userResponse = await User.findById(user._id);
     res.json(userResponse);
   } catch (error: any) {
     if (error.name === "CastError") {
@@ -106,6 +92,20 @@ router.delete("/:id", async (req: Request, res: Response) => {
   } catch (error: any) {
     if (error.name === "CastError") {
       return res.status(400).json({ error: "Invalid user ID" });
+    }
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/login", async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    const result = await loginUser(email, password); // Use service
+    res.json(result);
+  } catch (error: any) {
+    if (error.message === "Invalid credentials") {
+      return res.status(401).json({ error: error.message });
     }
     res.status(500).json({ error: error.message });
   }

@@ -3,25 +3,25 @@ declare const Todo: mongoose.Model<{
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
+    user: mongoose.Types.ObjectId;
     title: string;
     completed: boolean;
-    user: mongoose.Types.ObjectId;
     description?: string | null | undefined;
 }, {}, {}, {}, mongoose.Document<unknown, {}, {
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
+    user: mongoose.Types.ObjectId;
     title: string;
     completed: boolean;
-    user: mongoose.Types.ObjectId;
     description?: string | null | undefined;
 }> & {
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
+    user: mongoose.Types.ObjectId;
     title: string;
     completed: boolean;
-    user: mongoose.Types.ObjectId;
     description?: string | null | undefined;
 } & {
     _id: mongoose.Types.ObjectId;
@@ -33,25 +33,25 @@ declare const Todo: mongoose.Model<{
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
+    user: mongoose.Types.ObjectId;
     title: string;
     completed: boolean;
-    user: mongoose.Types.ObjectId;
     description?: string | null | undefined;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
+    user: mongoose.Types.ObjectId;
     title: string;
     completed: boolean;
-    user: mongoose.Types.ObjectId;
     description?: string | null | undefined;
 }>> & mongoose.FlatRecord<{
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
+    user: mongoose.Types.ObjectId;
     title: string;
     completed: boolean;
-    user: mongoose.Types.ObjectId;
     description?: string | null | undefined;
 }> & {
     _id: mongoose.Types.ObjectId;

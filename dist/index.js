@@ -8,6 +8,8 @@ const morgan_1 = __importDefault(require("morgan"));
 const db_1 = __importDefault(require("./config/db"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const todosRoutes_1 = __importDefault(require("./routes/todosRoutes"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 (0, db_1.default)();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
@@ -26,8 +28,8 @@ app.get("/", (req, res) => {
         status: "running",
         endpoints: {
             users: "/users",
-            todos: "/todos"
-        }
+            todos: "/todos",
+        },
     });
 });
 // 404 handler
