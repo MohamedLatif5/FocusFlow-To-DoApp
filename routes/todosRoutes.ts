@@ -19,9 +19,18 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 // get todo by id
-router.get("/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
-  res.send("todo");
+router.get("/:id", async (req: Request, res: Response) => {
+  try {
+    const todo = await Todo.findOne({ _id: req.params.id, user: "60d5f9f8f8a8a0a8a0a8a0a8" }); // placeholder user id
+
+    if (!todo) {
+      return res.status(404).send();
+    }
+
+    res.send(todo);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 // create todo
