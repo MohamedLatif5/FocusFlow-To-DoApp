@@ -9,8 +9,13 @@ const Todo = require("../models/todoModel");
 // read todos
 // get all todos
 
-router.get("/", (req: Request, res: Response) => {
-  res.send("todos");
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const todos = await Todo.find({ user: "60d5f9f8f8a8a0a8a0a8a0a8" }); // placeholder user id
+    res.send(todos);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 // get todo by id
