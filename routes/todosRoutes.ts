@@ -2,6 +2,8 @@ const express = require("express");
 import type { Request, Response } from "express";
 const router = express.Router();
 
+const Todo = require("../models/todoModel");
+
 // restful api // crud operations // create read update delete
 
 // read todos
@@ -18,9 +20,19 @@ router.get("/:id", (req: Request, res: Response) => {
 });
 
 // create todo
-router.post("/", (req: Request, res: Response) => {
-  res.send("todo created");
-  console.log("todo", req.body);
+router.post("/", async (req: Request, res: Response) => {
+  try {
+    const { title, description } = req.body;
+    const todo = new Todo({
+      title,
+      description,
+      user: "60d5f9f8f8a8a0a8a0a8a0a8", // placeholder user id
+    });
+    await todo.save();
+    res.status(201).send(todo);
+  } catch (error) {
+    res.status(400).send(error);
+  }
 });
 
 // update todo
