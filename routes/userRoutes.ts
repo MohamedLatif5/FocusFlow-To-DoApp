@@ -1,5 +1,7 @@
-const express = require("express");
+import express from "express";
 import type { Request, Response } from "express";
+import User from "../models/userModel";
+
 const router = express.Router();
 
 router.get("/", async (req: Request, res: Response) => {
@@ -10,8 +12,6 @@ router.get("/", async (req: Request, res: Response) => {
     res.status(500).send(error);
   }
 });
-
-const User = require("../models/userModel");
 
 router.get("/:id", async (req: Request, res: Response) => {
   try {
@@ -76,4 +76,4 @@ router.delete("/:id", async (req: Request, res: Response) => {
   }
 });
 
-module.exports = router;
+export default router;

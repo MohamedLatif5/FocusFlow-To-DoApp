@@ -1,13 +1,14 @@
-const express = require("express");
-const morgan = require("morgan");
-const connectDB = require("./config/db");
+import express from "express";
+import morgan from "morgan";
+import connectDB from "./config/db";
+import userRoutes from "./routes/userRoutes";
+import todosRoutes from "./routes/todosRoutes";
 
 connectDB();
 
 const app = express();
 const port = 3000;
-const userRoutes = require("./routes/userRoutes");
-const todosRoutes = require("./routes/todosRoutes");
+
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

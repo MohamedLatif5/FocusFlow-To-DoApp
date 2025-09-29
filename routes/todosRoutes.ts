@@ -1,17 +1,18 @@
-const express = require("express");
+import express from "express";
 import type { Request, Response } from "express";
-const router = express.Router();
+import Todo from "../models/todoModel";
 
-const Todo = require("../models/todoModel");
+const router = express.Router();
 
 // restful api // crud operations // create read update delete
 
 // read todos
 // get all todos
-
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const todos = await Todo.find({ user: "60d5f9f8f8a8a0a8a0a8a0a8" }); // placeholder user id
+    const { userId } = req.query;
+    const filter = userId ? { user: userId } : {};
+    const todos = await Todo.find(filter).populate('user', 'name email');
     res.send(todos);
   } catch (error) {
     res.status(500).send(error);
@@ -21,7 +22,7 @@ router.get("/", async (req: Request, res: Response) => {
 // get todo by id
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const todo = await Todo.findOne({ _id: req.params.id, user: "60d5f9f8f8a8a0a8a0a8a0a8" }); // placeholder user id
+    const todo = await Todo.findById(req.params.id).populate('user', 'name email');
 
     if (!todo) {
       return res.status(404).send();
@@ -36,13 +37,19 @@ router.get("/:id", async (req: Request, res: Response) => {
 // create todo
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, userId } = req.body;
+    
+    if (!userId) {
+      return res.status(400).send({ error: "User ID is required" });
+    }
+    
     const todo = new Todo({
       title,
       description,
-      user: "60d5f9f8f8a8a0a8a0a8a0a8", // placeholder user id
+      user: userId,
     });
     await todo.save();
+    await todo.populate('user', 'name email');
     res.status(201).send(todo);
   } catch (error) {
     res.status(400).send(error);
@@ -62,7 +69,7 @@ router.patch("/:id", async (req: Request, res: Response) => {
   }
 
   try {
-    const todo = await Todo.findOne({ _id: req.params.id, user: "60d5f9f8f8a8a0a8a0a8a0a8" }); // placeholder user id
+    const todo = await Todo.findById(req.params.id);
 
     if (!todo) {
       return res.status(404).send();
@@ -70,14 +77,26 @@ router.patch("/:id", async (req: Request, res: Response) => {
 
     updates.forEach((update) => (todo[update] = req.body[update]));
     await todo.save();
+    await todo.populate('user', 'name email');
     res.send(todo);
   } catch (error) {
     res.status(400).send(error);
   }
 });
+
 // delete todo
-router.delete("/:id", (req: Request, res: Response) => {
-  res.send("todo deleted");
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const todo = await Todo.findByIdAndDelete(req.params.id);
+
+    if (!todo) {
+      return res.status(404).send();
+    }
+
+    res.send({ message: "Todo deleted successfully", todo });
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
-module.exports = router;
+export default router;
