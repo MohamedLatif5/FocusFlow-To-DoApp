@@ -2,8 +2,13 @@ const express = require("express");
 import type { Request, Response } from "express";
 const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
-  res.send("Hello, World!");
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const users = await User.find({});
+    res.send(users);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 const User = require("../models/userModel");
